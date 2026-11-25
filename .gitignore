@@ -1,0 +1,16 @@
+# Environment variables
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.venv/
+venv/
+
+# Gradio / OS / Vercel
+.gradio/
+flagged/
+.vercel
+.DS_Store
