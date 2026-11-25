@@ -49,6 +49,9 @@ class ChatRequest(BaseModel):
 def _resolve_api_key() -> str:
     """Return a configured Groq API key or an empty string without exposing it."""
     key = (GROQ_API_KEY or os.getenv("GROQ_API_KEY") or "").strip()
+    if (not key or key == "your_groq_api_key_here") and (BASE_DIR / ".env").exists():
+        load_dotenv(dotenv_path=BASE_DIR / ".env", override=True)
+        key = (os.getenv("GROQ_API_KEY") or "").strip()
     if not key or key == "your_groq_api_key_here":
         return ""
     return key
@@ -98,8 +101,9 @@ def stream_chat_events(req: ChatRequest) -> Generator[str, None, None]:
                 "type": "error",
                 "code": "missing_key",
                 "message": (
-                    "GROQ_API_KEY is not configured. Add your key to the .env file "
-                    "(`GROQ_API_KEY=your_groq_api_key_here`) and restart the server."
+                    "GROQ_API_KEY is not configured. "
+                    "If deployed on Vercel, add GROQ_API_KEY under Project Settings -> Environment Variables and redeploy. "
+                    "If running locally, add GROQ_API_KEY to your .env file."
                 ),
             }
         )
